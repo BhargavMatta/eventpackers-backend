@@ -1,28 +1,14 @@
-# Use OpenJDK 17 as base image
-FROM maven:3.9.2-eclipse-temurin-17 as build
+# Use official OpenJDK 17 runtime as a parent image
+FROM openjdk:17-jdk-slim
 
-# Set working directory
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy pom.xml and download dependencies
-COPY pom.xml .
-RUN mvn dependency:go-offline
+# Copy the Spring Boot JAR file into the container
+COPY target/eventpackers-0.0.1-SNAPSHOT.jar app.jar
 
-# Copy source code
-COPY src ./src
-
-# Package the app
-RUN mvn clean package -DskipTests
-
-# Create final image
-FROM eclipse-temurin:17-jdk-alpine
-WORKDIR /app
-
-# Copy built jar from previous stage
-COPY --from=build /app/target/*.jar app.jar
-
-# Expose port
+# Expose port 8080 to the outside world
 EXPOSE 8080
 
-# Run the app
+# Run the JAR file
 ENTRYPOINT ["java", "-jar", "app.jar"]
