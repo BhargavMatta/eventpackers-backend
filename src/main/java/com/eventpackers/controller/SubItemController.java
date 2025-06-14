@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/subitems") // ✅ Important for base path
+@RequestMapping("/api/subitems") // ✅ Base path to fix 404 errors
 public class SubItemController {
 
     @Autowired
@@ -19,7 +19,7 @@ public class SubItemController {
     @Autowired
     private ItemRepository itemRepo;
 
-    // ✅ Add a subitem to an item
+    // ✅ Add a SubItem to a specific Item
     @PostMapping("/add/{itemId}")
     public SubItem addSubItem(@PathVariable Long itemId, @RequestBody SubItem subItem) {
         return itemRepo.findById(itemId).map(item -> {
@@ -28,13 +28,13 @@ public class SubItemController {
         }).orElseThrow(() -> new RuntimeException("Item not found"));
     }
 
-    // ✅ Get subitems for a given item
+    // ✅ Get all SubItems of a specific Item
     @GetMapping("/item/{itemId}")
     public List<SubItem> getSubItemsByItem(@PathVariable Long itemId) {
         return subItemRepo.findByItemId(itemId);
     }
 
-    // ✅ Update subitem
+    // ✅ Update a SubItem by its ID
     @PutMapping("/{id}")
     public SubItem updateSubItem(@PathVariable Long id, @RequestBody SubItem updated) {
         return subItemRepo.findById(id).map(existing -> {
@@ -46,7 +46,7 @@ public class SubItemController {
         }).orElseThrow(() -> new RuntimeException("SubItem not found"));
     }
 
-    // ✅ Delete subitem
+    // ✅ Delete a SubItem by its ID
     @DeleteMapping("/{id}")
     public void deleteSubItem(@PathVariable Long id) {
         subItemRepo.deleteById(id);
