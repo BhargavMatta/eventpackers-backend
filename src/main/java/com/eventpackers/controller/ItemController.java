@@ -1,7 +1,6 @@
 package com.eventpackers.controller;
 
 import com.eventpackers.model.Item;
-import com.eventpackers.model.Service;
 import com.eventpackers.repository.ItemRepository;
 import com.eventpackers.repository.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/items")
 public class ItemController {
@@ -37,8 +35,6 @@ public class ItemController {
         if (optionalItem.isPresent()) {
             Item existingItem = optionalItem.get();
             existingItem.setName(updatedItem.getName());
-            existingItem.setDescription(updatedItem.getDescription());
-            existingItem.setPrice(updatedItem.getPrice());
             existingItem.setImageUrl(updatedItem.getImageUrl());
             return itemRepository.save(existingItem);
         } else {
