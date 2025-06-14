@@ -1,17 +1,16 @@
 package com.eventpackers.controller;
 
-import com.eventpackers.model.SubItem;
 import com.eventpackers.model.Item;
-import com.eventpackers.repository.SubItemRepository;
+import com.eventpackers.model.SubItem;
 import com.eventpackers.repository.ItemRepository;
-
+import com.eventpackers.repository.SubItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/subitems")
+@RequestMapping("/api/subitems") // ✅ Important for base path
 public class SubItemController {
 
     @Autowired
@@ -20,7 +19,7 @@ public class SubItemController {
     @Autowired
     private ItemRepository itemRepo;
 
-    // Add SubItem to a specific Item
+    // ✅ Add a subitem to an item
     @PostMapping("/add/{itemId}")
     public SubItem addSubItem(@PathVariable Long itemId, @RequestBody SubItem subItem) {
         return itemRepo.findById(itemId).map(item -> {
@@ -29,25 +28,25 @@ public class SubItemController {
         }).orElseThrow(() -> new RuntimeException("Item not found"));
     }
 
-    // Get all SubItems for an Item
+    // ✅ Get subitems for a given item
     @GetMapping("/item/{itemId}")
     public List<SubItem> getSubItemsByItem(@PathVariable Long itemId) {
         return subItemRepo.findByItemId(itemId);
     }
 
-    // Update SubItem by ID
+    // ✅ Update subitem
     @PutMapping("/{id}")
     public SubItem updateSubItem(@PathVariable Long id, @RequestBody SubItem updated) {
-        return subItemRepo.findById(id).map(subItem -> {
-            subItem.setName(updated.getName());
-            subItem.setDescription(updated.getDescription());
-            subItem.setDuration(updated.getDuration());
-            subItem.setPrice(updated.getPrice());
-            return subItemRepo.save(subItem);
+        return subItemRepo.findById(id).map(existing -> {
+            existing.setName(updated.getName());
+            existing.setDescription(updated.getDescription());
+            existing.setPrice(updated.getPrice());
+            existing.setDuration(updated.getDuration());
+            return subItemRepo.save(existing);
         }).orElseThrow(() -> new RuntimeException("SubItem not found"));
     }
 
-    // Delete SubItem
+    // ✅ Delete subitem
     @DeleteMapping("/{id}")
     public void deleteSubItem(@PathVariable Long id) {
         subItemRepo.deleteById(id);
