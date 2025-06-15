@@ -1,8 +1,7 @@
 package com.eventpackers.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Item {
@@ -12,20 +11,53 @@ public class Item {
     private Long id;
 
     private String name;
+
     private String description;
+
     private String imageUrl;
 
-    @ManyToMany
-    @JoinTable(
-            name = "item_services",
-            joinColumns = @JoinColumn(name = "item_id"),
-            inverseJoinColumns = @JoinColumn(name = "service_id")
-    )
-    private List<Service> services;
+    @ManyToMany(mappedBy = "items")
+    private Set<Service> services;
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<SubItem> subItems;
+    // ✅ Add these getters & setters
 
-    // Getters & Setters
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Set<Service> getServices() {
+        return services;
+    }
+
+    public void setServices(Set<Service> services) {
+        this.services = services;
+    }
 }
