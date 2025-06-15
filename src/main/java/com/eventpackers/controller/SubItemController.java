@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/subitems")
+@RequestMapping("/api/subitems") // ✅ REQUIRED FOR URL MAPPING
 public class SubItemController {
 
     @Autowired
@@ -19,22 +19,22 @@ public class SubItemController {
     @Autowired
     private ItemRepository itemRepo;
 
-    // Add a SubItem to an Item
+    // ✅ Add subitem to item
     @PostMapping("/add/{itemId}")
     public SubItem addSubItem(@PathVariable Long itemId, @RequestBody SubItem subItem) {
-        return itemRepo.findById(itemId).map(item -> {
-            subItem.setItem(item);
-            return subItemRepo.save(subItem);
-        }).orElseThrow(() -> new RuntimeException("Item not found"));
+        Item item = itemRepo.findById(itemId)
+                .orElseThrow(() -> new RuntimeException("Item not found with id " + itemId));
+        subItem.setItem(item);
+        return subItemRepo.save(subItem);
     }
 
-    // Get all SubItems of a specific Item
+    // ✅ Get subitems by item ID
     @GetMapping("/item/{itemId}")
-    public List<SubItem> getSubItems(@PathVariable Long itemId) {
+    public List<SubItem> getSubItemsByItem(@PathVariable Long itemId) {
         return subItemRepo.findByItemId(itemId);
     }
 
-    // Update SubItem by ID
+    // ✅ Update subitem
     @PutMapping("/{id}")
     public SubItem updateSubItem(@PathVariable Long id, @RequestBody SubItem updated) {
         return subItemRepo.findById(id).map(sub -> {
@@ -46,7 +46,7 @@ public class SubItemController {
         }).orElseThrow(() -> new RuntimeException("SubItem not found"));
     }
 
-    // Delete SubItem
+    // ✅ Delete subitem
     @DeleteMapping("/{id}")
     public void deleteSubItem(@PathVariable Long id) {
         subItemRepo.deleteById(id);
