@@ -1,16 +1,17 @@
 package com.eventpackers.controller;
 
-import com.eventpackers.model.Item;
 import com.eventpackers.model.SubItem;
-import com.eventpackers.repository.ItemRepository;
+import com.eventpackers.model.Item;
 import com.eventpackers.repository.SubItemRepository;
+import com.eventpackers.repository.ItemRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/subitems") // ✅ REQUIRED FOR URL MAPPING
+@RequestMapping("/api/subitems") // ✅ REQUIRED for all endpoints to be prefixed correctly
 public class SubItemController {
 
     @Autowired
@@ -19,19 +20,18 @@ public class SubItemController {
     @Autowired
     private ItemRepository itemRepo;
 
-    // ✅ Add subitem to item
-    @PostMapping("/add/{itemId}")
-    public SubItem addSubItem(@PathVariable Long itemId, @RequestBody SubItem subItem) {
-        Item item = itemRepo.findById(itemId)
-                .orElseThrow(() -> new RuntimeException("Item not found with id " + itemId));
-        subItem.setItem(item);
-        return subItemRepo.save(subItem);
+    // ✅ Get all subitems by itemId
+    @GetMapping("/item/{itemId}")
+    public List<SubItem> getByItemId(@PathVariable Long itemId) {
+        return subItemRepo.findByItemId(itemId);
     }
 
-    // ✅ Get subitems by item ID
-    @GetMapping("/item/{itemId}")
-    public List<SubItem> getSubItemsByItem(@PathVariable Long itemId) {
-        return subItemRepo.findByItemId(itemId);
+    // ✅ Add a new subitem under itemId
+    @PostMapping("/add/{itemId}")
+    public SubItem add(@PathVariable Long itemId, @RequestBody SubItem subItem) {
+        Item item = itemRepo.findById(itemId).orElseThrow(() -> new RuntimeException("Item not found"));
+        subItem.setItem(item);
+        return subItemRepo.save(subItem);
     }
 
     // ✅ Update subitem
