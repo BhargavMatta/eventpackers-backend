@@ -1,5 +1,6 @@
 package com.eventpackers.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.List;
@@ -24,9 +25,11 @@ public class Item {
     private Set<Service> services = new HashSet<>();
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<SubItem> subItems;
 
     // Getters and Setters
+
     public Long getId() {
         return id;
     }

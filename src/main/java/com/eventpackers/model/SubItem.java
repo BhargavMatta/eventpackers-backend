@@ -1,9 +1,11 @@
 package com.eventpackers.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
 public class SubItem {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -15,9 +17,11 @@ public class SubItem {
 
     @ManyToOne
     @JoinColumn(name = "item_id")
+    @JsonBackReference
     private Item item;
 
     // Getters and Setters
+
     public Long getId() {
         return id;
     }
