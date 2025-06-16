@@ -20,31 +20,32 @@ public class SubItemController {
     @Autowired
     private ItemRepository itemRepository;
 
-    // ✅ Get all SubItems
+    // ✅ GET ALL SUBITEMS
     @GetMapping("/all")
     public List<SubItem> getAllSubItems() {
         return subItemRepository.findAll();
     }
 
-    // ✅ Get SubItems by Item ID
+    // ✅ GET SUBITEMS BY ITEM ID
     @GetMapping("/item/{itemId}")
     public List<SubItem> getSubItemsByItemId(@PathVariable Long itemId) {
         return subItemRepository.findByItemId(itemId);
     }
 
-    // ✅ Add SubItem to an Item
+    // ✅ ADD SUBITEM TO ITEM
     @PostMapping("/add/{itemId}")
     public SubItem addSubItem(@PathVariable Long itemId, @RequestBody SubItem subItem) {
-        Item item = itemRepository.findById(itemId).orElseThrow(() -> new RuntimeException("Item not found"));
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new RuntimeException("Item not found"));
         subItem.setItem(item);
         return subItemRepository.save(subItem);
     }
 
-    // ✅ Update SubItem
-    @PutMapping("/update/{subItemId}")
-    public SubItem updateSubItem(@PathVariable Long subItemId, @RequestBody SubItem updatedSubItem) {
-        SubItem subItem = subItemRepository.findById(subItemId)
-                .orElseThrow(() -> new RuntimeException("SubItem not found with ID: " + subItemId));
+    // ✅ UPDATE SUBITEM
+    @PutMapping("/update/{id}")
+    public SubItem updateSubItem(@PathVariable Long id, @RequestBody SubItem updatedSubItem) {
+        SubItem subItem = subItemRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("SubItem not found with ID: " + id));
 
         subItem.setName(updatedSubItem.getName());
         subItem.setDescription(updatedSubItem.getDescription());
@@ -54,9 +55,9 @@ public class SubItemController {
         return subItemRepository.save(subItem);
     }
 
-    // ✅ Delete SubItem
-    @DeleteMapping("/delete/{subItemId}")
-    public void deleteSubItem(@PathVariable Long subItemId) {
-        subItemRepository.deleteById(subItemId);
+    // ✅ DELETE SUBITEM
+    @DeleteMapping("/delete/{id}")
+    public void deleteSubItem(@PathVariable Long id) {
+        subItemRepository.deleteById(id);
     }
 }
