@@ -15,6 +15,7 @@ public class SubItem {
     private int duration;
     private double price;
 
+
     @ManyToOne
     @JoinColumn(name = "item_id")
     @JsonBackReference
