@@ -4,14 +4,13 @@ import jakarta.persistence.*;
 
 @Entity
 public class SubItem {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
     private String description;
-    private int durationInMinutes;
+    private int duration;
     private double price;
 
     @ManyToOne
@@ -19,13 +18,8 @@ public class SubItem {
     private Item item;
 
     // Getters and Setters
-
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -44,12 +38,12 @@ public class SubItem {
         this.description = description;
     }
 
-    public int getDurationInMinutes() {
-        return durationInMinutes;
+    public int getDuration() {
+        return duration;
     }
 
-    public void setDurationInMinutes(int durationInMinutes) {
-        this.durationInMinutes = durationInMinutes;
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 
     public double getPrice() {
