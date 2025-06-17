@@ -84,7 +84,6 @@ public class ItemController {
                     }).collect(Collectors.toList())
             );
 
-
             return dto;
         }).collect(Collectors.toList());
 
