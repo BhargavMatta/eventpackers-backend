@@ -1,9 +1,12 @@
 package com.eventpackers.controller;
 
 import com.eventpackers.dto.ServiceResponse;
+import com.eventpackers.dto.ItemResponse;
 import com.eventpackers.model.Item;
 import com.eventpackers.model.Service;
 import com.eventpackers.repository.ServiceRepository;
+import com.eventpackers.repository.ItemRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +21,9 @@ public class ServiceController {
     @Autowired
     private ServiceRepository serviceRepository;
 
+    @Autowired
+    private ItemRepository itemRepository;
+
     @PostMapping("/add")
     public Service addService(@RequestBody Service service) {
         return serviceRepository.save(service);
@@ -28,42 +34,23 @@ public class ServiceController {
         List<Service> services = serviceRepository.findAll();
 
         return services.stream().map(service -> {
-            ServiceResponse dto = new ServiceResponse();
-            dto.setId(service.getId());
-            dto.setName(service.getName());
-            dto.setDescription(service.getDescription());
-            dto.setImageUrl(service.getImageUrl());
+            ServiceResponse response = new ServiceResponse();
+            response.setId(service.getId());
+            response.setName(service.getName());
+            response.setDescription(service.getDescription());
+            response.setImageUrl(service.getImageUrl());
 
-            List<ServiceResponse.ItemSimpleDTO> itemDTOs = service.getItems().stream().map(item -> {
-                ServiceResponse.ItemSimpleDTO itemDTO = new ServiceResponse.ItemSimpleDTO();
+            // Convert related items to DTOs without circular nesting
+            List<ItemResponse> itemDTOs = service.getItems().stream().map(item -> {
+                ItemResponse itemDTO = new ItemResponse();
                 itemDTO.setId(item.getId());
                 itemDTO.setName(item.getName());
                 itemDTO.setImageUrl(item.getImageUrl());
                 return itemDTO;
             }).collect(Collectors.toList());
 
-            dto.setItems(itemDTOs);
-            return dto;
+            response.setItems(itemDTOs);
+            return response;
         }).collect(Collectors.toList());
-    }
-
-    @GetMapping("/{id}")
-    public Service getServiceById(@PathVariable Long id) {
-        return serviceRepository.findById(id).orElse(null);
-    }
-
-    @PutMapping("/{id}")
-    public Service updateService(@PathVariable Long id, @RequestBody Service updatedService) {
-        return serviceRepository.findById(id).map(service -> {
-            service.setName(updatedService.getName());
-            service.setDescription(updatedService.getDescription());
-            service.setImageUrl(updatedService.getImageUrl());
-            return serviceRepository.save(service);
-        }).orElse(null);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteService(@PathVariable Long id) {
-        serviceRepository.deleteById(id);
     }
 }
