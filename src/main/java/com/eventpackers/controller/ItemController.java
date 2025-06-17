@@ -1,17 +1,21 @@
 package com.eventpackers.controller;
 
 import com.eventpackers.dto.ItemRequest;
+import com.eventpackers.dto.ItemResponse;
+import com.eventpackers.dto.SubItemResponse;
 import com.eventpackers.model.Item;
 import com.eventpackers.model.Service;
+import com.eventpackers.model.SubItem;
 import com.eventpackers.repository.ItemRepository;
 import com.eventpackers.repository.ServiceRepository;
+import com.eventpackers.repository.SubItemRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/items")
@@ -24,7 +28,10 @@ public class ItemController {
     @Autowired
     private ServiceRepository serviceRepository;
 
-    // ✅ Create Item (with or without service linkage)
+    @Autowired
+    private SubItemRepository subItemRepository;
+
+    // ✅ 1. Create Item (with or without service linkage)
     @PostMapping("/add")
     public Item addItem(@RequestBody ItemRequest request) {
         Item item = new Item();
@@ -34,56 +41,52 @@ public class ItemController {
         Set<Service> services = new HashSet<>();
         if (request.getServiceIds() != null && !request.getServiceIds().isEmpty()) {
             for (Long id : request.getServiceIds()) {
-                Service service = serviceRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Service not found with ID: " + id));
-                services.add(service);
+                Service service = serviceRepository.findById(id).orElse(null);
+                if (service != null) {
+                    services.add(service);
+                }
             }
+            item.setServices(services);
         }
 
-        item.setServices(services);
         return itemRepository.save(item);
     }
 
-    // ✅ Get all items
+    // ✅ 2. Get All Items (with clean SubItem + ServiceId list only)
     @GetMapping("/all")
-    public List<Item> getAllItems() {
-        return itemRepository.findAll();
-    }
+    public ResponseEntity<List<ItemResponse>> getAllItems() {
+        List<Item> items = itemRepository.findAll();
 
-    // ✅ Get item by ID
-    @GetMapping("/{id}")
-    public Item getItemById(@PathVariable Long id) {
-        return itemRepository.findById(id).orElse(null);
-    }
+        List<ItemResponse> response = items.stream().map(item -> {
+            ItemResponse dto = new ItemResponse();
+            dto.setId(item.getId());
+            dto.setName(item.getName());
+            dto.setImageUrl(item.getImageUrl());
 
-    // ✅ Update item by ID
-    @PutMapping("/{id}")
-    public Item updateItem(@PathVariable Long id, @RequestBody ItemRequest request) {
-        Optional<Item> optionalItem = itemRepository.findById(id);
-        if (optionalItem.isEmpty()) {
-            throw new RuntimeException("Item not found with ID: " + id);
-        }
+            // Flattened Service ID list
+            dto.setServiceIds(
+                    item.getServices().stream()
+                            .map(Service::getId)
+                            .collect(Collectors.toList())
+            );
 
-        Item item = optionalItem.get();
-        item.setName(request.getName());
-        item.setImageUrl(request.getImageUrl());
+            // SubItems (only level 1, no recursion)
+            dto.setSubItems(
+                    item.getSubItems().stream().map(subItem -> {
+                        SubItemResponse subDto = new SubItemResponse();
+                        subDto.setId(subItem.getId());
+                        subDto.setName(subItem.getName());
+                        subDto.setDescription(subItem.getDescription());
+                        subDto.setDuration(subItem.getDuration());
+                        subDto.setPrice(subItem.getPrice());
+                        subDto.setItemId(item.getId());
+                        return subDto;
+                    }).collect(Collectors.toList())
+            );
 
-        Set<Service> services = new HashSet<>();
-        if (request.getServiceIds() != null && !request.getServiceIds().isEmpty()) {
-            for (Long sid : request.getServiceIds()) {
-                Service service = serviceRepository.findById(sid)
-                        .orElseThrow(() -> new RuntimeException("Service not found with ID: " + sid));
-                services.add(service);
-            }
-        }
+            return dto;
+        }).collect(Collectors.toList());
 
-        item.setServices(services);
-        return itemRepository.save(item);
-    }
-
-    // ✅ Delete item by ID
-    @DeleteMapping("/{id}")
-    public void deleteItem(@PathVariable Long id) {
-        itemRepository.deleteById(id);
+        return ResponseEntity.ok(response);
     }
 }
