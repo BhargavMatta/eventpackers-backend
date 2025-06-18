@@ -8,7 +8,6 @@ public class ItemResponse {
     private String imageUrl;
     private List<SubItemResponse> subItems;
 
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

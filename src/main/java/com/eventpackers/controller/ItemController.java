@@ -36,10 +36,7 @@ public class ItemController {
         if (request.getServiceIds() != null && !request.getServiceIds().isEmpty()) {
             Set<Service> services = new HashSet<>();
             for (Long id : request.getServiceIds()) {
-                Service service = serviceRepository.findById(id).orElse(null);
-                if (service != null) {
-                    services.add(service);
-                }
+                serviceRepository.findById(id).ifPresent(services::add);
             }
             item.setServices(services);
         }
@@ -49,26 +46,24 @@ public class ItemController {
 
     @GetMapping("/all")
     public List<ItemResponse> getAllItems() {
-        List<Item> items = itemRepository.findAll();
+        return itemRepository.findAll().stream().map(item -> {
+            ItemResponse response = new ItemResponse();
+            response.setId(item.getId());
+            response.setName(item.getName());
+            response.setImageUrl(item.getImageUrl());
 
-        return items.stream().map(item -> {
-            ItemResponse itemResponse = new ItemResponse();
-            itemResponse.setId(item.getId());
-            itemResponse.setName(item.getName());
-            itemResponse.setImageUrl(item.getImageUrl());
-
-            List<SubItemResponse> subItems = item.getSubItems().stream().map(subItem -> {
-                SubItemResponse subItemResponse = new SubItemResponse();
-                subItemResponse.setId(subItem.getId());
-                subItemResponse.setName(subItem.getName());
-                subItemResponse.setDescription(subItem.getDescription());
-                subItemResponse.setDuration(subItem.getDuration());
-                subItemResponse.setPrice(subItem.getPrice());
-                return subItemResponse;
+            List<SubItemResponse> subItems = item.getSubItems().stream().map(sub -> {
+                SubItemResponse subRes = new SubItemResponse();
+                subRes.setId(sub.getId());
+                subRes.setName(sub.getName());
+                subRes.setDescription(sub.getDescription());
+                subRes.setDuration(sub.getDuration());
+                subRes.setPrice(sub.getPrice());
+                return subRes;
             }).collect(Collectors.toList());
 
-            itemResponse.setSubItems(subItems);
-            return itemResponse;
+            response.setSubItems(subItems);
+            return response;
         }).collect(Collectors.toList());
     }
 }
