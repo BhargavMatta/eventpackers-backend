@@ -1,5 +1,6 @@
 package com.eventpackers.controller;
 
+import com.eventpackers.dto.ItemRequest;
 import com.eventpackers.dto.ItemResponse;
 import com.eventpackers.dto.SubItemResponse;
 import com.eventpackers.model.Item;
@@ -7,12 +8,11 @@ import com.eventpackers.model.Service;
 import com.eventpackers.model.SubItem;
 import com.eventpackers.repository.ItemRepository;
 import com.eventpackers.repository.ServiceRepository;
-import com.eventpackers.repository.SubItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,29 +27,48 @@ public class ItemController {
     @Autowired
     private ServiceRepository serviceRepository;
 
+    @PostMapping("/add")
+    public Item addItem(@RequestBody ItemRequest request) {
+        Item item = new Item();
+        item.setName(request.getName());
+        item.setImageUrl(request.getImageUrl());
+
+        if (request.getServiceIds() != null && !request.getServiceIds().isEmpty()) {
+            Set<Service> services = new HashSet<>();
+            for (Long id : request.getServiceIds()) {
+                Service service = serviceRepository.findById(id).orElse(null);
+                if (service != null) {
+                    services.add(service);
+                }
+            }
+            item.setServices(services);
+        }
+
+        return itemRepository.save(item);
+    }
+
     @GetMapping("/all")
     public List<ItemResponse> getAllItems() {
         List<Item> items = itemRepository.findAll();
+
         return items.stream().map(item -> {
-            ItemResponse dto = new ItemResponse();
-            dto.setId(item.getId());
-            dto.setName(item.getName());
-            dto.setImageUrl(item.getImageUrl());
+            ItemResponse itemResponse = new ItemResponse();
+            itemResponse.setId(item.getId());
+            itemResponse.setName(item.getName());
+            itemResponse.setImageUrl(item.getImageUrl());
 
-            dto.setServiceIds(item.getServices().stream().map(Service::getId).collect(Collectors.toList()));
-
-            List<SubItemResponse> subItemResponses = item.getSubItems().stream().map(sub -> {
-                SubItemResponse subDto = new SubItemResponse();
-                subDto.setId(sub.getId());
-                subDto.setName(sub.getName());
-                subDto.setDescription(sub.getDescription());
-                subDto.setPrice(sub.getPrice());
-                subDto.setDuration(sub.getDuration());
-                return subDto;
+            List<SubItemResponse> subItems = item.getSubItems().stream().map(subItem -> {
+                SubItemResponse subItemResponse = new SubItemResponse();
+                subItemResponse.setId(subItem.getId());
+                subItemResponse.setName(subItem.getName());
+                subItemResponse.setDescription(subItem.getDescription());
+                subItemResponse.setDuration(subItem.getDuration());
+                subItemResponse.setPrice(subItem.getPrice());
+                return subItemResponse;
             }).collect(Collectors.toList());
 
-            dto.setSubItems(subItemResponses);
-            return dto;
+            itemResponse.setSubItems(subItems);
+            return itemResponse;
         }).collect(Collectors.toList());
     }
 }
