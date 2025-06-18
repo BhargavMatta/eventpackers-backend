@@ -1,12 +1,12 @@
 package com.eventpackers.controller;
 
-import com.eventpackers.dto.ServiceResponse;
 import com.eventpackers.dto.ItemResponse;
+import com.eventpackers.dto.ServiceResponse;
+import com.eventpackers.dto.SubItemResponse;
 import com.eventpackers.model.Item;
 import com.eventpackers.model.Service;
+import com.eventpackers.model.SubItem;
 import com.eventpackers.repository.ServiceRepository;
-import com.eventpackers.repository.ItemRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,9 +20,6 @@ public class ServiceController {
 
     @Autowired
     private ServiceRepository serviceRepository;
-
-    @Autowired
-    private ItemRepository itemRepository;
 
     @PostMapping("/add")
     public Service addService(@RequestBody Service service) {
@@ -40,16 +37,34 @@ public class ServiceController {
             response.setDescription(service.getDescription());
             response.setImageUrl(service.getImageUrl());
 
-            // Convert related items to DTOs without circular nesting
-            List<ItemResponse> itemDTOs = service.getItems().stream().map(item -> {
-                ItemResponse itemDTO = new ItemResponse();
-                itemDTO.setId(item.getId());
-                itemDTO.setName(item.getName());
-                itemDTO.setImageUrl(item.getImageUrl());
-                return itemDTO;
+            List<ItemResponse> itemResponses = service.getItems().stream().map(item -> {
+                ItemResponse itemResponse = new ItemResponse();
+                itemResponse.setId(item.getId());
+                itemResponse.setName(item.getName());
+                itemResponse.setImageUrl(item.getImageUrl());
+
+                // Map sub-items to SubItemResponse to avoid circular reference
+                List<SubItemResponse> subItemResponses = item.getSubItems().stream().map(subItem -> {
+                    SubItemResponse subDto = new SubItemResponse();
+                    subDto.setId(subItem.getId());
+                    subDto.setName(subItem.getName());
+                    subDto.setDescription(subItem.getDescription());
+                    subDto.setDuration(subItem.getDuration());
+                    subDto.setPrice(subItem.getPrice());
+                    return subDto;
+                }).collect(Collectors.toList());
+
+                itemResponse.setSubItems(subItemResponses);
+
+                // Set associated service IDs
+                itemResponse.setServiceIds(item.getServices().stream()
+                        .map(Service::getId)
+                        .collect(Collectors.toList()));
+
+                return itemResponse;
             }).collect(Collectors.toList());
 
-            response.setItems(itemDTOs);
+            response.setItems(itemResponses);
             return response;
         }).collect(Collectors.toList());
     }
