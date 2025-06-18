@@ -7,9 +7,7 @@ public class ServiceResponse {
     private String name;
     private String description;
     private String imageUrl;
-    private List<ItemResponse> items; // ✅ Accept full ItemResponse instead of ItemSimpleResponse
-
-    // Getters and Setters
+    private List<ItemResponse> items;
 
     public Long getId() {
         return id;
