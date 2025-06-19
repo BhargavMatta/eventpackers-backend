@@ -13,13 +13,17 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String itemName;
-    private double price;
     private int quantity;
-
-    private String serviceName; // Optional: set only if item was selected via service
 
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
+
+    @ManyToOne
+    @JoinColumn(name = "item_id")
+    private Item item;
+
+    @ManyToOne
+    @JoinColumn(name = "sub_item_id")
+    private SubItem subItem;
 }

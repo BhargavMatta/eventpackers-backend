@@ -1,20 +1,25 @@
 package com.eventpackers.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Entity
+@Getter
+@Setter
+@Table(name = "item")
 public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     private String name;
+
     private String imageUrl;
 
     @ManyToMany
@@ -25,45 +30,6 @@ public class Item {
     )
     private Set<Service> services = new HashSet<>();
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SubItem> subItems;
-
-    // Getters and Setters
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public Set<Service> getServices() {
-        return services;
-    }
-
-    public void setServices(Set<Service> services) {
-        this.services = services;
-    }
-
-    public List<SubItem> getSubItems() {
-        return subItems;
-    }
-
-    public void setSubItems(List<SubItem> subItems) {
-        this.subItems = subItems;
-    }
 }

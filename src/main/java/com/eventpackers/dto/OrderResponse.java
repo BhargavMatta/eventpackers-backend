@@ -1,37 +1,17 @@
 package com.eventpackers.dto;
 
-import com.eventpackers.model.Order;
-import com.eventpackers.model.OrderItem;
-
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class OrderResponse {
     private Long id;
-    private String customerName;
+    private Long userId;
+    private String status;
+    private LocalDateTime deliveryDateTime;
     private String doorNumber;
     private String landmark;
     private String pincode;
-    private LocalDateTime deliveryDateTime;
-    private int totalAmount;
-    private List<OrderItemResponse> items;
-
-    public OrderResponse() {}
-
-    public OrderResponse(Order order) {
-        this.id = order.getId();
-        this.customerName = order.getCustomerName();
-        this.doorNumber = order.getDoorNumber();
-        this.landmark = order.getLandmark();
-        this.pincode = order.getPincode();
-        this.deliveryDateTime = order.getDeliveryDateTime();
-        this.totalAmount = order.getTotalAmount();
-
-        this.items = order.getItems().stream()
-                .map(OrderItemResponse::new)
-                .collect(Collectors.toList());
-    }
+    private List<OrderItemResponse> orderItems;
 
     public Long getId() {
         return id;
@@ -41,12 +21,28 @@ public class OrderResponse {
         this.id = id;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getDeliveryDateTime() {
+        return deliveryDateTime;
+    }
+
+    public void setDeliveryDateTime(LocalDateTime deliveryDateTime) {
+        this.deliveryDateTime = deliveryDateTime;
     }
 
     public String getDoorNumber() {
@@ -73,27 +69,11 @@ public class OrderResponse {
         this.pincode = pincode;
     }
 
-    public LocalDateTime getDeliveryDateTime() {
-        return deliveryDateTime;
+    public List<OrderItemResponse> getOrderItems() {
+        return orderItems;
     }
 
-    public void setDeliveryDateTime(LocalDateTime deliveryDateTime) {
-        this.deliveryDateTime = deliveryDateTime;
-    }
-
-    public int getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(int totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
-    public List<OrderItemResponse> getItems() {
-        return items;
-    }
-
-    public void setItems(List<OrderItemResponse> items) {
-        this.items = items;
+    public void setOrderItems(List<OrderItemResponse> orderItems) {
+        this.orderItems = orderItems;
     }
 }

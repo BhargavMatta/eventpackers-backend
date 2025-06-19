@@ -4,21 +4,38 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class OrderRequest {
-    private String customerName;
+
+    private Long userId;
+    private String status;
+    private LocalDateTime deliveryDateTime;
     private String doorNumber;
     private String landmark;
     private String pincode;
-    private int totalAmount; // ✅ Added totalAmount field
-    private LocalDateTime deliveryDateTime;
-    private List<OrderItemRequest> items;
+    private List<OrderItemRequest> orderItems;
 
-    // Getters and setters
-    public String getCustomerName() {
-        return customerName;
+    // ✅ Getters and Setters
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getDeliveryDateTime() {
+        return deliveryDateTime;
+    }
+
+    public void setDeliveryDateTime(LocalDateTime deliveryDateTime) {
+        this.deliveryDateTime = deliveryDateTime;
     }
 
     public String getDoorNumber() {
@@ -45,27 +62,11 @@ public class OrderRequest {
         this.pincode = pincode;
     }
 
-    public int getTotalAmount() { // ✅ Getter
-        return totalAmount;
+    public List<OrderItemRequest> getOrderItems() {
+        return orderItems;
     }
 
-    public void setTotalAmount(int totalAmount) { // ✅ Setter
-        this.totalAmount = totalAmount;
-    }
-
-    public LocalDateTime getDeliveryDateTime() {
-        return deliveryDateTime;
-    }
-
-    public void setDeliveryDateTime(LocalDateTime deliveryDateTime) {
-        this.deliveryDateTime = deliveryDateTime;
-    }
-
-    public List<OrderItemRequest> getItems() {
-        return items;
-    }
-
-    public void setItems(List<OrderItemRequest> items) {
-        this.items = items;
+    public void setOrderItems(List<OrderItemRequest> orderItems) {
+        this.orderItems = orderItems;
     }
 }

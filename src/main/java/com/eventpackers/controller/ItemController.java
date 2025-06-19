@@ -8,10 +8,11 @@ import com.eventpackers.model.Service;
 import com.eventpackers.model.SubItem;
 import com.eventpackers.repository.ItemRepository;
 import com.eventpackers.repository.ServiceRepository;
+import com.eventpackers.repository.SubItemRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,18 +28,18 @@ public class ItemController {
     @Autowired
     private ServiceRepository serviceRepository;
 
+    @Autowired
+    private SubItemRepository subItemRepository;
+
     @PostMapping("/add")
     public Item addItem(@RequestBody ItemRequest request) {
         Item item = new Item();
         item.setName(request.getName());
         item.setImageUrl(request.getImageUrl());
 
-        if (request.getServiceIds() != null && !request.getServiceIds().isEmpty()) {
-            Set<Service> services = new HashSet<>();
-            for (Long id : request.getServiceIds()) {
-                serviceRepository.findById(id).ifPresent(services::add);
-            }
-            item.setServices(services);
+        if (request.getServiceIds() != null) {
+            List<Service> services = serviceRepository.findAllById(request.getServiceIds());
+            item.setServices(services.stream().collect(Collectors.toSet()));
         }
 
         return itemRepository.save(item);
@@ -46,24 +47,37 @@ public class ItemController {
 
     @GetMapping("/all")
     public List<ItemResponse> getAllItems() {
-        return itemRepository.findAll().stream().map(item -> {
-            ItemResponse response = new ItemResponse();
-            response.setId(item.getId());
-            response.setName(item.getName());
-            response.setImageUrl(item.getImageUrl());
+        List<Item> items = itemRepository.findAll();
+        return items.stream().map(this::mapToItemResponse).collect(Collectors.toList());
+    }
 
-            List<SubItemResponse> subItems = item.getSubItems().stream().map(sub -> {
-                SubItemResponse subRes = new SubItemResponse();
-                subRes.setId(sub.getId());
-                subRes.setName(sub.getName());
-                subRes.setDescription(sub.getDescription());
-                subRes.setDuration(sub.getDuration());
-                subRes.setPrice(sub.getPrice());
-                return subRes;
+    private ItemResponse mapToItemResponse(Item item) {
+        ItemResponse response = new ItemResponse();
+        response.setId(item.getId());
+        response.setName(item.getName());
+        response.setImageUrl(item.getImageUrl());
+
+        if (item.getServices() != null) {
+            List<Long> serviceIds = item.getServices().stream()
+                    .map(Service::getId)
+                    .collect(Collectors.toList());
+            response.setServiceIds(serviceIds);
+        }
+
+        if (item.getSubItems() != null) {
+            List<SubItemResponse> subItems = item.getSubItems().stream().map(subItem -> {
+                SubItemResponse s = new SubItemResponse();
+                s.setId(subItem.getId());
+                s.setName(subItem.getName());
+                s.setDescription(subItem.getDescription());
+                s.setDuration(subItem.getDuration());
+                s.setPrice(subItem.getPrice());
+                return s;
             }).collect(Collectors.toList());
 
             response.setSubItems(subItems);
-            return response;
-        }).collect(Collectors.toList());
+        }
+
+        return response;
     }
 }

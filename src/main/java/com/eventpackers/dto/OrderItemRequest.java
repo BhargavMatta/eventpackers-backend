@@ -1,42 +1,34 @@
 package com.eventpackers.dto;
 
 public class OrderItemRequest {
-    private String itemName;
-    private double price;
+    private Long itemId;
+    private Long subItemId;
     private int quantity;
-    private String serviceName;
 
-    // Getters and setters
-
-    public String getItemName() {
-        return itemName;
+    // Getter and Setter for itemId
+    public Long getItemId() {
+        return itemId;
     }
 
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
     }
 
-    public double getPrice() {
-        return price;
+    // Getter and Setter for subItemId
+    public Long getSubItemId() {
+        return subItemId;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setSubItemId(Long subItemId) {
+        this.subItemId = subItemId;
     }
 
+    // Getter and Setter for quantity
     public int getQuantity() {
         return quantity;
     }
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
-    }
-
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
     }
 }

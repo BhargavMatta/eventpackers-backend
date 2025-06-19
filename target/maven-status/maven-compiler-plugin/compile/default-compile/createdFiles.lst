@@ -1,10 +1,14 @@
 com\eventpackers\config\CorsConfig.class
 com\eventpackers\dto\OrderResponse.class
+com\eventpackers\service\impl\OrderServiceImpl.class
 com\eventpackers\repository\OrderRepository.class
 com\eventpackers\repository\ServiceRepository.class
+com\eventpackers\dto\ItemRequest.class
 com\eventpackers\controller\SubItemController.class
 com\eventpackers\controller\OrderController.class
+com\eventpackers\dto\ServiceResponse.class
 com\eventpackers\controller\UserController.class
+com\eventpackers\dto\ItemResponse.class
 com\eventpackers\controller\ItemController.class
 com\eventpackers\repository\OrderItemRepository.class
 com\eventpackers\model\SubItem.class
@@ -16,7 +20,9 @@ com\eventpackers\model\Service.class
 com\eventpackers\dto\OrderItemRequest.class
 com\eventpackers\model\Order.class
 com\eventpackers\model\OrderItem.class
+com\eventpackers\dto\SubItemResponse.class
 com\eventpackers\model\User.class
+com\eventpackers\service\OrderService.class
 com\eventpackers\dto\OrderRequest.class
 com\eventpackers\repository\ItemRepository.class
 com\eventpackers\EventpackersApplication.class

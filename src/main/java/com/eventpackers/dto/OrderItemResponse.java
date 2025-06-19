@@ -1,23 +1,16 @@
 package com.eventpackers.dto;
 
-import com.eventpackers.model.OrderItem;
-
 public class OrderItemResponse {
     private Long id;
+    private Long itemId;
     private String itemName;
-    private double price;
+    private Long subItemId;
+    private String subItemName;
+    private double subItemPrice;
     private int quantity;
+    private double totalPrice;
+    private Long serviceId;
     private String serviceName;
-
-    public OrderItemResponse() {}
-
-    public OrderItemResponse(OrderItem item) {
-        this.id = item.getId();
-        this.itemName = item.getItemName();
-        this.price = item.getPrice(); // Use double
-        this.quantity = item.getQuantity();
-        this.serviceName = item.getServiceName();
-    }
 
     public Long getId() {
         return id;
@@ -25,6 +18,14 @@ public class OrderItemResponse {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
     }
 
     public String getItemName() {
@@ -35,12 +36,28 @@ public class OrderItemResponse {
         this.itemName = itemName;
     }
 
-    public double getPrice() {
-        return price;
+    public Long getSubItemId() {
+        return subItemId;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setSubItemId(Long subItemId) {
+        this.subItemId = subItemId;
+    }
+
+    public String getSubItemName() {
+        return subItemName;
+    }
+
+    public void setSubItemName(String subItemName) {
+        this.subItemName = subItemName;
+    }
+
+    public double getSubItemPrice() {
+        return subItemPrice;
+    }
+
+    public void setSubItemPrice(double subItemPrice) {
+        this.subItemPrice = subItemPrice;
     }
 
     public int getQuantity() {
@@ -49,6 +66,22 @@ public class OrderItemResponse {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public Long getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(Long serviceId) {
+        this.serviceId = serviceId;
     }
 
     public String getServiceName() {
