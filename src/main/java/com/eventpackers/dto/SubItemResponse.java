@@ -4,8 +4,8 @@ public class SubItemResponse {
     private Long id;
     private String name;
     private String description;
-    private int duration;
-    private double price;
+    private int price;
+    private String duration;
 
     public Long getId() {
         return id;
@@ -31,19 +31,19 @@ public class SubItemResponse {
         this.description = description;
     }
 
-    public int getDuration() {
-        return duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
-
-    public double getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(int price) {
         this.price = price;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 }
