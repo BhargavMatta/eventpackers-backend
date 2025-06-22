@@ -4,8 +4,8 @@ public class SubItemResponse {
     private Long id;
     private String name;
     private String description;
-    private int price;
-    private String duration;
+    private double price;
+    private String duration; // Fix: Changed from int to String
 
     public Long getId() {
         return id;
@@ -31,11 +31,11 @@ public class SubItemResponse {
         this.description = description;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 

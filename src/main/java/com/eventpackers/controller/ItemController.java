@@ -70,7 +70,7 @@ public class ItemController {
                 s.setId(subItem.getId());
                 s.setName(subItem.getName());
                 s.setDescription(subItem.getDescription());
-                s.setDuration(subItem.getDuration());
+                s.setDuration(String.valueOf(subItem.getDuration()));
                 s.setPrice(subItem.getPrice());
                 return s;
             }).collect(Collectors.toList());
