@@ -1,9 +1,10 @@
 package com.eventpackers.controller;
 
-import com.eventpackers.dto.ItemResponse;
 import com.eventpackers.dto.ServiceResponse;
+import com.eventpackers.dto.ItemResponse;
 import com.eventpackers.dto.SubItemResponse;
 import com.eventpackers.model.Service;
+import com.eventpackers.model.Item;
 import com.eventpackers.repository.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/services")
-@CrossOrigin(origins = "*")
+@CrossOrigin
 public class ServiceController {
 
     @Autowired
@@ -32,19 +33,15 @@ public class ServiceController {
                 ItemResponse itemResponse = new ItemResponse();
                 itemResponse.setId(item.getId());
                 itemResponse.setName(item.getName());
+                itemResponse.setImageUrl(item.getImageUrl());
 
                 List<SubItemResponse> subItemResponses = item.getSubItems().stream().map(subItem -> {
                     SubItemResponse subResponse = new SubItemResponse();
                     subResponse.setId(subItem.getId());
                     subResponse.setName(subItem.getName());
                     subResponse.setDescription(subItem.getDescription());
-
-                    // FIXED: Convert double to int
-                    subResponse.setPrice((int) subItem.getPrice());
-
-                    // FIXED: Convert int to String
-                    subResponse.setDuration(subItem.getDuration() + " min");
-
+                    subResponse.setDuration(String.valueOf(subItem.getDuration()));
+                    subResponse.setPrice(subItem.getPrice());
                     return subResponse;
                 }).collect(Collectors.toList());
 
